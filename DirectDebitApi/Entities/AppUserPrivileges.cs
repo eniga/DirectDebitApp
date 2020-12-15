@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DirectDebitApi.Entities
 {
-    public class AppUserPrivileges
+    [Table("app_user_privileges")]
+    public class AppUserPrivileges : BaseEntity
     {
-        public AppUserPrivileges()
-        {
-        }
+        public string userid { get; set; }
+        public string perms { get; set; }
     }
 }

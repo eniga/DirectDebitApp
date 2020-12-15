@@ -1,10 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DirectDebitApi.Entities
 {
-    public class AppNotificationsSettings
+    [Table("app_notifications_settings")]
+    public class AppNotificationsSettings : BaseEntity
     {
-        public AppNotificationsSettings()
-        {
-        }
+        public string clientid { get; set; }
+        public string notificationid { get; set; }
+        public string emailsubject { get; set; }
+        public string emailbody { get; set; }
+        public string smsbody { get; set; }
     }
 }

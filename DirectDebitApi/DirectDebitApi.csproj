@@ -8,6 +8,38 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.0" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.0" NoWarn="NU1605" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="Dapper" Version="2.0.78" />
+    <PackageReference Include="MySql.Data" Version="8.0.22" />
+    <PackageReference Include="MicroOrm.Dapper.Repositories" Version="1.15.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Services\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Services\User\" />
+    <Folder Include="Services\Account\" />
+    <Folder Include="Services\AppBUnit\" />
+    <Folder Include="Services\AppLoan\" />
+    <Folder Include="Services\AppLoansLog\" />
+    <Folder Include="Services\AppLog\" />
+    <Folder Include="Services\AppNotificationsSetting\" />
+    <Folder Include="Services\AppNotificationsTemplate\" />
+    <Folder Include="Services\AppPermTable\" />
+    <Folder Include="Services\AppRepayment\" />
+    <Folder Include="Services\AppSetting\" />
+    <Folder Include="Services\AppSettingsPreference\" />
+    <Folder Include="Services\AppUserPreference\" />
+    <Folder Include="Services\Bank\" />
+    <Folder Include="Services\Collateral\" />
+    <Folder Include="Services\Contact\" />
+    <Folder Include="Services\Customer\" />
+    <Folder Include="Services\Disbursement\" />
+    <Folder Include="Services\Invoice\" />
+    <Folder Include="Services\Loan\" />
+    <Folder Include="Services\Mandate\" />
+    <Folder Include="Services\Merchant\" />
+    <Folder Include="Services\Payment\" />
+  </ItemGroup>
 </Project>

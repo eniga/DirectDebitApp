@@ -1,9 +1,13 @@
 ﻿using System;
+using DirectDebitApi.Entities;
+using DirectDebitApi.Repositories;
+using MicroOrm.Dapper.Repositories;
+
 namespace DirectDebitApi.Services.AppLoansLog
 {
-    public class AppLoansLogService
+    public class AppLoansLogService : GenericRepository<AppLoansLogs>, IAppLoansLogService
     {
-        public AppLoansLogService()
+        public AppLoansLogService(DapperRepository<AppLoansLogs> repository) : base(repository)
         {
         }
     }

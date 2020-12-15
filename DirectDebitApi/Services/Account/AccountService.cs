@@ -1,9 +1,13 @@
 ﻿using System;
+using DirectDebitApi.Entities;
+using DirectDebitApi.Repositories;
+using MicroOrm.Dapper.Repositories;
+
 namespace DirectDebitApi.Services.Account
 {
-    public class AccountService
+    public class AccountService : GenericRepository<Accounts>, IAccountService
     {
-        public AccountService()
+        public AccountService(DapperRepository<Accounts> repository) : base(repository)
         {
         }
     }

@@ -1,7 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using DirectDebitApi.Repositories;
+using DirectDebitApi.Services;
+using DirectDebitApi.Services.Account;
+using DirectDebitApi.Services.AppBUnit;
+using DirectDebitApi.Services.AppLoansLog;
+using DirectDebitApi.Services.AppLog;
+using DirectDebitApi.Services.AppNotificationsSetting;
+using DirectDebitApi.Services.User;
+using MicroOrm.Dapper.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -11,6 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using MySql.Data.MySqlClient;
 
 namespace DirectDebitApi
 {
@@ -32,6 +43,21 @@ namespace DirectDebitApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DirectDebitApi", Version = "v1" });
             });
+
+            // Register Dapper Dependencies
+            services.AddTransient<IDbConnection>(prov => new MySqlConnection(prov.GetService<IConfiguration>().GetConnectionString("DefaultConnection")));
+            services.AddTransient(typeof(DapperRepository<>));
+
+            // Add cors support
+            services.AddCors();
+
+            // Register Services
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAppBUnitService, AppBUnitService>();
+            services.AddTransient<IAppLoansLogService, AppLoansLogService>();
+            services.AddTransient<IAppLogService, AppLogService>();
+            services.AddTransient<IAppNotificationsSettingService, AppNotificationsSettingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +69,13 @@ namespace DirectDebitApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DirectDebitApi v1"));
             }
+
+            // Enable cors
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                );
 
             app.UseHttpsRedirection();
 

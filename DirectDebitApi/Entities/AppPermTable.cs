@@ -1,10 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DirectDebitApi.Entities
 {
-    public class AppPermTable
+    [Table("app_perm_table")]
+    public class AppPermTable : BaseEntity
     {
-        public AppPermTable()
-        {
-        }
+        public string perm { get; set; }
     }
 }

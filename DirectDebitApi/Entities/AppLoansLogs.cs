@@ -1,10 +1,18 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace DirectDebitApi.Entities
 {
-    public class AppLoansLogs
+    [Table("app_loans_logs")]
+    public class AppLoansLogs : BaseEntity
     {
-        public AppLoansLogs()
-        {
-        }
+        public string loanbatchid { get; set; }
+        public string loanid { get; set; }
+        public string clientid { get; set; }
+        public string logtype { get; set; }
+        public string logdate { get; set; }
+        public string logtime { get; set; }
+        public string activity { get; set; }
+        public string process_user { get; set; }
     }
 }
