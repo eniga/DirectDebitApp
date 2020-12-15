@@ -10,6 +10,13 @@ using DirectDebitApi.Services.AppBUnit;
 using DirectDebitApi.Services.AppLoansLog;
 using DirectDebitApi.Services.AppLog;
 using DirectDebitApi.Services.AppNotificationsSetting;
+using DirectDebitApi.Services.AppNotificationsTemplate;
+using DirectDebitApi.Services.AppPermTable;
+using DirectDebitApi.Services.AppRepayment;
+using DirectDebitApi.Services.AppSetting;
+using DirectDebitApi.Services.AppSettingsPreference;
+using DirectDebitApi.Services.AppUserPreference;
+using DirectDebitApi.Services.Bank;
 using DirectDebitApi.Services.User;
 using MicroOrm.Dapper.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -58,6 +65,13 @@ namespace DirectDebitApi
             services.AddTransient<IAppLoansLogService, AppLoansLogService>();
             services.AddTransient<IAppLogService, AppLogService>();
             services.AddTransient<IAppNotificationsSettingService, AppNotificationsSettingService>();
+            services.AddTransient<IAppNotificationsTemplateService, AppNotificationsTemplateService>();
+            services.AddTransient<IAppPermTableService, AppPermTableService>();
+            services.AddTransient<IAppRepaymentService, AppRepaymentService>();
+            services.AddTransient<IAppSettingService, AppSettingService>();
+            services.AddTransient<IAppSettingsPreferenceService, AppSettingsPreferenceService>();
+            services.AddTransient<IAppUserPreferenceService, AppUserPreferenceService>();
+            services.AddTransient<IBankService, BankService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
