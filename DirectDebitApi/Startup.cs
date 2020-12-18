@@ -17,6 +17,15 @@ using DirectDebitApi.Services.AppSetting;
 using DirectDebitApi.Services.AppSettingsPreference;
 using DirectDebitApi.Services.AppUserPreference;
 using DirectDebitApi.Services.Bank;
+using DirectDebitApi.Services.Collateral;
+using DirectDebitApi.Services.Contact;
+using DirectDebitApi.Services.Customer;
+using DirectDebitApi.Services.Disbursement;
+using DirectDebitApi.Services.Invoice;
+using DirectDebitApi.Services.Loan;
+using DirectDebitApi.Services.Mandate;
+using DirectDebitApi.Services.Merchant;
+using DirectDebitApi.Services.Payment;
 using DirectDebitApi.Services.User;
 using MicroOrm.Dapper.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -72,6 +81,15 @@ namespace DirectDebitApi
             services.AddTransient<IAppSettingsPreferenceService, AppSettingsPreferenceService>();
             services.AddTransient<IAppUserPreferenceService, AppUserPreferenceService>();
             services.AddTransient<IBankService, BankService>();
+            services.AddTransient<ICollateralService, CollateralService>();
+            services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IDisbursementService, DisbursementService>();
+            services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<ILoanService, LoanService>();
+            services.AddTransient<IMandateService, MandateService>();
+            services.AddTransient<IMerchantService, MerchantService>();
+            services.AddTransient<IPaymentService, PaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
