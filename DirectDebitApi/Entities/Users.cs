@@ -26,5 +26,7 @@ namespace DirectDebitApi.Entities
         public DateTime lastlogindate { get; set; }
         public string role { get; set; }
         public string imagepath { get; set; }
+        [NotMapped]
+        public string token { get; set; }
     }
 }
