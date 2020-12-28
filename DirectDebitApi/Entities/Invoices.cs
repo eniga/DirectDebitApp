@@ -13,7 +13,7 @@ namespace DirectDebitApi.Entities
         public DateTime createdat { get; set; } = DateTime.Now;
         public int createdby { get; set; }
         [UpdatedAt]
-        public DateTime modifiedat { get; set; }
-        public int modifiedby { get; set; }
+        public DateTime updatedat { get; set; }
+        public int updatedby { get; set; }
     }
 }
