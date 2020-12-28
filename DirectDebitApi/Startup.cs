@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DirectDebitApi.Helpers;
 using DirectDebitApi.Repositories;
 using DirectDebitApi.Services;
 using DirectDebitApi.Services.Account;
@@ -36,6 +38,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
 
@@ -67,6 +70,10 @@ namespace DirectDebitApi
             // Add cors support
             services.AddCors();
 
+            // Register components that access external systems
+            services.AddTransient<IEncryptor, Encryptor>();
+            //services.AddTransient<IJwtUtil, JwtUtil>();
+
             // Register Services
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IAccountService, AccountService>();
@@ -90,6 +97,24 @@ namespace DirectDebitApi
             services.AddTransient<IMandateService, MandateService>();
             services.AddTransient<IMerchantService, MerchantService>();
             services.AddTransient<IPaymentService, PaymentService>();
+
+            // Add authentication header to use JWT
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            })
+            .AddJwtBearer("JwtBearer", jwtOptions =>
+            {
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtUtil.SECRET_KEY)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,11 +134,15 @@ namespace DirectDebitApi
                 .AllowAnyHeader()
                 );
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            // Enable use of authentication header
+            //app.UseAuthentication();
+
+            // Enable use of authorization header
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
