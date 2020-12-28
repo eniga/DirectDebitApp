@@ -139,10 +139,10 @@ namespace DirectDebitApi
             app.UseRouting();
 
             // Enable use of authentication header
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
             // Enable use of authorization header
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
