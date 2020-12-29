@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DirectDebitApi.Data;
+using DirectDebitApi.Extensions;
 using DirectDebitApi.Helpers;
 using DirectDebitApi.Repositories;
 using DirectDebitApi.Services;
@@ -34,6 +36,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -62,9 +65,11 @@ namespace DirectDebitApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DirectDebitApi", Version = "v1" });
             });
-
+            var conString = Configuration.GetConnectionString("DefaultConnection");
             // Register Dapper Dependencies
             services.AddTransient<IDbConnection>(prov => new MySqlConnection(prov.GetService<IConfiguration>().GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<DirectDebitContext>(options => options.UseMySQL(conString));
             services.AddTransient(typeof(DapperRepository<>));
 
             // Add cors support
@@ -122,15 +127,16 @@ namespace DirectDebitApi
         {
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor | Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
+                ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
+                Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
             });
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DirectDebitApi v1"));
-            }
+            //if (env.IsDevelopment())
+            //{
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DirectDebitApi v1"));
+            // }
 
             // Enable cors
             app.UseCors(x => x
@@ -139,7 +145,10 @@ namespace DirectDebitApi
                 .AllowAnyHeader()
                 );
 
-            if(env.IsDevelopment())
+            //auto migration
+            app.UseDBAutoMigration();
+
+            if (env.IsDevelopment())
             {
                 app.UseHttpsRedirection();
             }
@@ -157,5 +166,7 @@ namespace DirectDebitApi
                 endpoints.MapControllers();
             });
         }
+
+
     }
 }
