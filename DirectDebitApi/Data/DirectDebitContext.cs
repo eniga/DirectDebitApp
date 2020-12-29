@@ -11,14 +11,6 @@ namespace DirectDebitApi.Data
 
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseMySQL("your_connection_string", builder =>
-        //    {
-        //        builder.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-        //    });
-        //    base.OnConfiguring(optionsBuilder);
-        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Map entities to tables  
