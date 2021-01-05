@@ -148,7 +148,8 @@ namespace DirectDebitApi.Controllers
                 if (exist != null)
                 {
                     var result = service.DeleteAsync(id).Result;
-                    return result ? Ok() : StatusCode(500, new Response { Status = false, Description = "Error deleting the record" });
+                    return result ? Ok(new Response { Status = true, Description = "Record deleted successfully" })
+                        : StatusCode(500, new Response { Status = false, Description = "Error deleting the record" });
                 }
                 else
                 {
