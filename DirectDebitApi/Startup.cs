@@ -1,14 +1,10 @@
+using AutoMapper;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using DirectDebitApi.Data;
 using DirectDebitApi.Extensions;
 using DirectDebitApi.Helpers;
-using DirectDebitApi.Repositories;
-using DirectDebitApi.Services;
 using DirectDebitApi.Services.Account;
 using DirectDebitApi.Services.AppBUnit;
 using DirectDebitApi.Services.AppLoansLog;
@@ -32,15 +28,14 @@ using DirectDebitApi.Services.Merchant;
 using DirectDebitApi.Services.Payment;
 using DirectDebitApi.Services.User;
 using MicroOrm.Dapper.Repositories;
+using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
@@ -61,16 +56,26 @@ namespace DirectDebitApi
         {
 
             services.AddControllers();
+
+            // Add functionality to inject IOptions<T>
+            services.AddOptions();
+
+            // Add service health check
+            services.AddHealthChecks();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "DirectDebitApi", Version = "v1" });
             });
-            var conString = Configuration.GetConnectionString("DefaultConnection");
+
             // Register Dapper Dependencies
             services.AddTransient<IDbConnection>(prov => new MySqlConnection(prov.GetService<IConfiguration>().GetConnectionString("DefaultConnection")));
-
-            services.AddDbContext<DirectDebitContext>(options => options.UseMySQL(conString));
+            services.AddTransient(typeof(ISqlGenerator<>), typeof(MySqlGenerator<>));
             services.AddTransient(typeof(DapperRepository<>));
+
+            // Register Entity Framework dependencies
+            var conString = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<DirectDebitContext>(options => options.UseMySQL(conString));
 
             // Add cors support
             services.AddCors();
@@ -80,7 +85,6 @@ namespace DirectDebitApi
             //services.AddTransient<IJwtUtil, JwtUtil>();
 
             // Register Services
-            services.AddTransient<IUserService, UserService>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAppBUnitService, AppBUnitService>();
             services.AddTransient<IAppLoansLogService, AppLoansLogService>();
@@ -102,6 +106,14 @@ namespace DirectDebitApi
             services.AddTransient<IMandateService, MandateService>();
             services.AddTransient<IMerchantService, MerchantService>();
             services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IUserService, UserService>();
+
+            services.AddAutoMapper(typeof(AutoMapping));
+
+            //Register middleware to ensure token has not been deactivated
+            //services.AddTransient<TokenActiveMiddleware>();
+            //manage token blacklisting
+            //services.AddSingleton<IDistributedCache, BlacklistedTokenCache>();
 
             // Add authentication header to use JWT
             services.AddAuthentication(options =>
@@ -131,12 +143,14 @@ namespace DirectDebitApi
                 Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto
             });
 
-            //if (env.IsDevelopment())
-            //{
-            app.UseDeveloperExceptionPage();
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseHttpsRedirection();
+            }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DirectDebitApi v1"));
-            // }
+
 
             // Enable cors
             app.UseCors(x => x
@@ -148,18 +162,20 @@ namespace DirectDebitApi
             //auto migration
             app.UseDBAutoMigration();
 
-            if (env.IsDevelopment())
-            {
-                app.UseHttpsRedirection();
-            }
-
             app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHealthChecks("/health");
+            });
 
             // Enable use of authentication header
             //app.UseAuthentication();
 
             // Enable use of authorization header
             //app.UseAuthorization();
+
+            //app.UseMiddleware<TokenActiveMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

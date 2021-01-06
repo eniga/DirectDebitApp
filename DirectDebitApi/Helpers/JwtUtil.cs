@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DirectDebitApi.Helpers
@@ -12,6 +15,7 @@ namespace DirectDebitApi.Helpers
         string GenerateJwtToken(int id, string name);
         Task<bool> IsActiveAsync(string token);
         Task DeactivateAsync(string token);
+        string GetToken(IHttpContextAccessor httpContextAccessor);
     }
 
     public class JwtUtil : IJwtUtil
@@ -70,5 +74,12 @@ namespace DirectDebitApi.Helpers
         }
 
         private static string GetKey(string token) => token + "_key";
+
+        //get token from http context
+        public string GetToken(IHttpContextAccessor httpContextAccessor)
+        {
+            var authorizationHeader = httpContextAccessor.HttpContext.Request.Headers["authorization"];
+            return authorizationHeader == StringValues.Empty ? string.Empty : authorizationHeader.Single().Split(" ").Last();
+        }
     }
 }

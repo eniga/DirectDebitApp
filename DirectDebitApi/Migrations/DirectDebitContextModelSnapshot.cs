@@ -38,6 +38,9 @@ namespace DirectDebitApi.Migrations
                     b.Property<int>("customerid")
                         .HasColumnType("int");
 
+                    b.Property<bool>("status")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime>("updatedat")
                         .HasColumnType("datetime");
 
