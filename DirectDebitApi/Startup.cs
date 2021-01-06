@@ -1,3 +1,4 @@
+using AutoMapper;
 using System;
 using System.Data;
 using System.Text;
@@ -106,6 +107,8 @@ namespace DirectDebitApi
             services.AddTransient<IMerchantService, MerchantService>();
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IUserService, UserService>();
+
+            services.AddAutoMapper(typeof(AutoMapping));
 
             //Register middleware to ensure token has not been deactivated
             //services.AddTransient<TokenActiveMiddleware>();

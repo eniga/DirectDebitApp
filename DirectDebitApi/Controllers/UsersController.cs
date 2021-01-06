@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DirectDebitApi.Entities;
+using DirectDebitApi.Helpers;
 using DirectDebitApi.Models;
 using DirectDebitApi.Services.User;
 using Microsoft.AspNetCore.Http;
@@ -18,11 +20,15 @@ namespace DirectDebitApi.Controllers
     {
         private IUserService service;
         private ILogger<UsersController> logger;
+        private IEncryptor encryptor;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserService service, ILogger<UsersController> logger)
+        public UsersController(IUserService service, ILogger<UsersController> logger, IEncryptor encryptor, IMapper mapper)
         {
             this.service = service;
             this.logger = logger;
+            this.encryptor = encryptor;
+            _mapper = mapper;
         }
 
         // GET: api/values
@@ -37,7 +43,10 @@ namespace DirectDebitApi.Controllers
                 var result = await service.GetAllAsync();
 
                 if (result.Any())
-                    return Ok(result);
+                {
+                    var response = _mapper.Map<IEnumerable<Users>, IEnumerable<UserDTO>>(result);
+                    return Ok(response);
+                }
                 else
                     return NoContent();
             }
@@ -62,7 +71,10 @@ namespace DirectDebitApi.Controllers
             {
                 var result = await service.GetByIdAsync(id);
                 if (result != null)
-                    return Ok(result);
+                {
+                    var response = _mapper.Map<Users, UserDTO>(result);
+                    return Ok(response);
+                }
                 else
                     return NotFound(new Response() { Status = false, Description = "No record found" });
             }
@@ -88,11 +100,14 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetAsync(x => x.email == item.email);
                 if (exist != null)
                     return Conflict(new Response() { Status = false, Description = "Duplicate record" });
+                // encrypt password before database scan
+                item.password = encryptor.EncryptAes(item.password);
                 var result = await service.AddAsync(item);
                 if (result)
                 {
                     var newitem = await service.GetAsync(x => x.email == item.email);
-                    return StatusCode(201, newitem);
+                    var response = _mapper.Map<Users, UserDTO>(newitem);
+                    return StatusCode(201, response);
                 }
                 else
                     return BadRequest();
@@ -118,7 +133,9 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetByIdAsync(id);
                 if (exist != null)
                 {
+                    item.password = exist.password;
                     var result = await service.UpdateAsync(item);
+                    var response = _mapper.Map<Users, UserDTO>(item);
                     return result ? Ok(item) : StatusCode(500, new Response() { Status = false, Description = "Error updating record" });
                 }
                 else
