@@ -31,6 +31,7 @@ using MicroOrm.Dapper.Repositories.SqlGenerator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -106,6 +107,11 @@ namespace DirectDebitApi
             services.AddTransient<IPaymentService, PaymentService>();
             services.AddTransient<IUserService, UserService>();
 
+            //Register middleware to ensure token has not been deactivated
+            //services.AddTransient<TokenActiveMiddleware>();
+            //manage token blacklisting
+            //services.AddSingleton<IDistributedCache, BlacklistedTokenCache>();
+
             // Add authentication header to use JWT
             services.AddAuthentication(options =>
             {
@@ -165,6 +171,8 @@ namespace DirectDebitApi
 
             // Enable use of authorization header
             //app.UseAuthorization();
+
+            //app.UseMiddleware<TokenActiveMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -44,7 +44,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -69,13 +69,14 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
         // POST api/values
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AppLoans))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(Response))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
         public async Task<ActionResult> PostAsync([FromBody] AppLoans item)
@@ -87,10 +88,10 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetAsync(x => x.loanid == item.loanid);
                 if (exist != null)
                     return Conflict(new Response() { Status = false, Description = "Duplicate record" });
-                var result = service.AddAsync(item).Result;
+                var result = await service.AddAsync(item);
                 if (result)
                 {
-                    var newitem = service.GetAsync(x => x.loanid == item.loanid).Result;
+                    var newitem = await service.GetAsync(x => x.loanid == item.loanid);
                     return StatusCode(201, newitem);
                 }
                 else
@@ -99,7 +100,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -117,7 +118,7 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetByIdAsync(id);
                 if (exist != null)
                 {
-                    var result = service.UpdateAsync(item).Result;
+                    var result = await service.UpdateAsync(item);
                     return result ? Ok(item) : StatusCode(500, new Response() { Status = false, Description = "Error updating record" });
                 }
                 else
@@ -128,7 +129,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -146,7 +147,7 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetByIdAsync(id);
                 if (exist != null)
                 {
-                    var result = service.DeleteAsync(id).Result;
+                    var result = await service.DeleteAsync(id);
                     return result ? Ok(new Response { Status = true, Description = "Record deleted successfully" })
                         : StatusCode(500, new Response { Status = false, Description = "Error deleting the record" });
                 }
@@ -158,7 +159,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
     }

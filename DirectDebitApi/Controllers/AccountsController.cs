@@ -7,7 +7,6 @@ using DirectDebitApi.Models;
 using DirectDebitApi.Services.Account;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -45,7 +44,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -70,13 +69,14 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
         // POST api/values
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Accounts))]
+        [ProducesResponseType(StatusCodes.Status409Conflict, Type = typeof(Response))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
         public async Task<ActionResult> PostAsync([FromBody] Accounts item)
@@ -88,10 +88,10 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetAsync(x => x.accountno == item.accountno);
                 if (exist != null)
                     return Conflict(new Response() { Status = false, Description = "Duplicate record" });
-                var result = service.AddAsync(item).Result;
+                var result = await service.AddAsync(item);
                 if (result)
                 {
-                    var newitem = service.GetAsync(x => x.accountno == item.accountno).Result;
+                    var newitem = await service.GetAsync(x => x.accountno == item.accountno);
                     return StatusCode(201, newitem);
                 }
                 else
@@ -100,7 +100,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -118,7 +118,7 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetByIdAsync(id);
                 if (exist != null)
                 {
-                    var result = service.UpdateAsync(item).Result;
+                    var result = await service.UpdateAsync(item);
                     return result ? Ok(item) : StatusCode(500, new Response() { Status = false, Description = "Error updating record" });
                 }
                 else
@@ -129,7 +129,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
 
@@ -147,7 +147,7 @@ namespace DirectDebitApi.Controllers
                 var exist = await service.GetByIdAsync(id);
                 if (exist != null)
                 {
-                    var result = service.DeleteAsync(id).Result;
+                    var result = await service.DeleteAsync(id);
                     return result ? Ok(new Response { Status = true, Description = "Record deleted successfully" })
                         : StatusCode(500, new Response { Status = false, Description = "Error deleting the record" });
                 }
@@ -159,7 +159,7 @@ namespace DirectDebitApi.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex.Message);
-                return StatusCode(500, new Response() { Status = false, Description = "Database error" });
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
             }
         }
     }
