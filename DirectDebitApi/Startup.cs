@@ -148,7 +148,7 @@ namespace DirectDebitApi
                 app.UseDeveloperExceptionPage();
                 app.UseHttpsRedirection();
             }
-            app.UseSwagger();
+            app.UseSwagger(c => c.SerializeAsV2 = true);
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DirectDebitApi v1"));
 
 
