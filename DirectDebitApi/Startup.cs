@@ -39,6 +39,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MySql.Data.MySqlClient;
+using DirectDebitApi.Services.AppLoan;
 
 namespace DirectDebitApi
 {
@@ -88,6 +89,7 @@ namespace DirectDebitApi
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAppBUnitService, AppBUnitService>();
             services.AddTransient<IAppLoansLogService, AppLoansLogService>();
+            services.AddTransient<IAppLoanService, AppLoanService>();
             services.AddTransient<IAppLogService, AppLogService>();
             services.AddTransient<IAppNotificationsSettingService, AppNotificationsSettingService>();
             services.AddTransient<IAppNotificationsTemplateService, AppNotificationsTemplateService>();
