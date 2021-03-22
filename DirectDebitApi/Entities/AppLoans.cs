@@ -9,7 +9,7 @@ namespace DirectDebitApi.Entities
         public string loanbatchid { get; set; }
         public string loanid { get; set; }
         public string clientid { get; set; }
-        public int bvn { get; set; }
+        public string bvn { get; set; }
         public string tel { get; set; }
         public string email { get; set; }
         public string fullname { get; set; }
@@ -25,5 +25,7 @@ namespace DirectDebitApi.Entities
         public string process_date { get; set; }
         public string process_time { get; set; }
         public string process_user { get; set; }
+        public decimal insurance_amount { get; set; }
+        public decimal management_fee { get; set; }
     }
 }

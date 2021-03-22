@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DirectDebitApi.Entities;
 using DirectDebitApi.Models;
 using DirectDebitApi.Services.AppLoan;
+using DirectDebitApi.Services.AppRepayment;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -96,6 +97,37 @@ namespace DirectDebitApi.Controllers
                 }
                 else
                     return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
+            }
+        }
+
+        [HttpPut("UpdateStatus")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<ActionResult> UpdateStatusAsync([FromBody] UpdateStatusRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            try
+            {
+                var exist = await service.GetAsync(x => x.loanid == request.loanid);
+                if (exist == null)
+                    return NotFound(new Response() { Status = false, Description = "Duplicate record" });
+                exist.process_status = request.status;
+                exist.process_date = DateTime.Now.ToShortDateString();
+                exist.process_time = DateTime.Now.ToShortTimeString();
+                await service.UpdateAsync(exist);
+                if(request.status == "Approved")
+                {
+                    await service.AddRepayments(exist);
+                }
+                return Ok(new Response { Status = true, Description = "Record updated successfully" });
             }
             catch (Exception ex)
             {

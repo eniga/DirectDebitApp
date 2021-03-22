@@ -24,7 +24,9 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("accountno")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("varchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<int>("bankid")
                         .HasColumnType("int");
@@ -41,10 +43,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<bool>("status")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -132,8 +134,8 @@ namespace DirectDebitApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("bvn")
-                        .HasColumnType("int");
+                    b.Property<string>("bvn")
+                        .HasColumnType("text");
 
                     b.Property<string>("clientid")
                         .HasColumnType("text");
@@ -143,6 +145,9 @@ namespace DirectDebitApi.Migrations
 
                     b.Property<string>("fullname")
                         .HasColumnType("text");
+
+                    b.Property<decimal>("insurance_amount")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("loanamount")
                         .HasColumnType("text");
@@ -173,6 +178,9 @@ namespace DirectDebitApi.Migrations
 
                     b.Property<string>("loantotal")
                         .HasColumnType("text");
+
+                    b.Property<decimal>("management_fee")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("process_date")
                         .HasColumnType("text");
@@ -566,9 +574,11 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("bankname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("cbncode")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("contactemail")
@@ -595,10 +605,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -622,18 +632,20 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("location")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.Property<decimal>("value")
@@ -660,27 +672,31 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("firstname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("lastname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("middlename")
                         .HasColumnType("text");
 
                     b.Property<string>("phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -695,6 +711,7 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("bvn")
+                        .IsRequired()
                         .HasColumnType("varchar(11)")
                         .HasMaxLength(11);
 
@@ -714,18 +731,21 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("employeeno")
                         .HasColumnType("text");
 
                     b.Property<string>("firstname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("imagepath")
                         .HasColumnType("text");
 
                     b.Property<string>("lastname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("maritalstatus")
@@ -735,6 +755,7 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("sex")
@@ -749,10 +770,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<string>("street")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.Property<string>("workplace")
@@ -788,12 +809,13 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("transactionreference")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -822,10 +844,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<int>("customerid")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -845,10 +867,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<decimal>("amount")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("amountleft")
+                    b.Property<decimal?>("amountleft")
                         .HasColumnType("decimal(18, 2)");
 
-                    b.Property<decimal>("amountpaid")
+                    b.Property<decimal?>("amountpaid")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime>("createdat")
@@ -867,6 +889,7 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<string>("loanid")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("merchantid")
@@ -878,10 +901,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -911,15 +934,16 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("mandatereference")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -940,12 +964,15 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("contactemail")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("contactname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("contactphone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("country")
@@ -958,6 +985,7 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("merchantname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("state")
@@ -969,8 +997,11 @@ namespace DirectDebitApi.Migrations
                     b.Property<string>("street")
                         .HasColumnType("text");
 
-                    b.Property<string>("updatedby")
-                        .HasColumnType("text");
+                    b.Property<DateTime?>("updatedat")
+                        .HasColumnType("datetime");
+
+                    b.Property<int?>("updatedby")
+                        .HasColumnType("int");
 
                     b.HasKey("id");
 
@@ -999,15 +1030,16 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("paymentreference")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.HasKey("id");
@@ -1028,19 +1060,24 @@ namespace DirectDebitApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("firstname")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("imagepath")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("lastlogindate")
+                    b.Property<DateTime?>("lastlogindate")
                         .HasColumnType("datetime");
 
                     b.Property<string>("lastname")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("merchantid")
                         .HasColumnType("text");
@@ -1057,10 +1094,10 @@ namespace DirectDebitApi.Migrations
                     b.Property<string>("status")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("updatedat")
+                    b.Property<DateTime?>("updatedat")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("updatedby")
+                    b.Property<int?>("updatedby")
                         .HasColumnType("int");
 
                     b.Property<string>("usertype")
