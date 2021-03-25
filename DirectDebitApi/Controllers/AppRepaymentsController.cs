@@ -47,6 +47,39 @@ namespace DirectDebitApi.Controllers
             }
         }
 
+        [HttpGet("loan")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<ActionResult> ListAsync(string loanid, string repaymentcycle = null)
+        {
+            try
+            {
+                if(repaymentcycle == null)
+                {
+                    var result = await service.GetAllAsync(x => x.loanid == loanid);
+
+                    if (result.Any())
+                        return Ok(result);
+                    else
+                        return NoContent();
+                }
+                else
+                {
+                    var result = await service.GetAllAsync(x => x.loanid == loanid && x.repaymentcycle == repaymentcycle);
+
+                    if (result.Any())
+                        return Ok(result);
+                    else
+                        return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
+            }
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(AppRepayments))]
