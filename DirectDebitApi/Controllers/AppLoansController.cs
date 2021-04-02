@@ -74,6 +74,30 @@ namespace DirectDebitApi.Controllers
             }
         }
 
+        [HttpGet("Loan/{loanid}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Loans))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Response))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(Response))]
+        public async Task<ActionResult> GetByLoanIdAsync(string loanid)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+            try
+            {
+                var result = await service.GetAllAsync(x => x.loanid == loanid);
+                if (result != null)
+                    return Ok(result.FirstOrDefault());
+                else
+                    return NotFound(new Response() { Status = false, Description = "No record found" });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500, new Response() { Status = false, Description = "System error" });
+            }
+        }
+
         // POST api/values
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(AppLoans))]
